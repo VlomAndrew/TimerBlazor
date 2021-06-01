@@ -1,0 +1,37 @@
+﻿@page "/boss/create"
+@using WebClient.Shared.Models
+@using WebClient.Shared.AuxClasses
+@using Microsoft.AspNetCore.Components
+@inject HttpClient Http
+<h3>BossCreate</h3>
+
+@Status
+<EditForm Model="@BossModel" OnValidSubmit="@Create">
+    <DataAnnotationsValidator />
+    <InputText @bind-Value="BossModel.Name"></InputText>
+    <InputText type="time" @bind-Value="@BossModel.TimeSpawn" @bind-format="@myTimeFormat" step="1" />
+    
+    <button type="submit">Создать</button>
+</EditForm>
+
+
+@code {
+    private CreateBossModel BossModel { get; set; } = new();
+
+    private string Status { get; set; } = "Не добавлено";
+
+    string myTimeFormat = "HH:mm:ss";
+
+    private async Task Create()
+    {
+        try
+        {
+            await Http.PostAsJsonAsync("api/Bosses/Create",BossModel);
+            Status = "Добавлено";
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e.Message);
+        }
+    }
+}

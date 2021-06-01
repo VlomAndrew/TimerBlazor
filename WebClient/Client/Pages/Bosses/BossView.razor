@@ -1,0 +1,38 @@
+﻿@page "/boss/view"
+@using WebClient.Shared.AuxClasses
+@using WebClient.Shared.Extentions
+
+
+
+
+<p><button class="btn btn-primary" @onclick="GoToCreate">Create</button></p>
+@if (Bosses == null)
+{
+    <h1>Loading...</h1>
+}
+else
+{
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Название</th>
+            <th>Время респа</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var boss in Bosses)
+        {
+            <tr>
+                <td hidden> @boss.Id </td>
+                <td> @boss.Name </td>
+                <td> @boss.TimeSpawn </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}
+
+
+@code {
+    
+}
