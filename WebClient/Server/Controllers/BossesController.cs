@@ -35,7 +35,7 @@ namespace WebClient.Server.Controllers
         public IEnumerable<BossDetailsModel> GetList()
         {
             
-            var res = from boss in _dbContext.Bosses
+            var res = from boss in _dbContext.Monsters
                 select new BossDetailsModel()
                 {
                     Id = boss.Id,
@@ -52,8 +52,21 @@ namespace WebClient.Server.Controllers
             {
                 TimeSpan obj;
                 TimeSpan.TryParse(model.TimeSpawn,out obj);
-                var newBoss = new BossData(model.Name, obj);
-                _dbContext.Bosses.Add(newBoss);
+                var newBoss = new MonsterData(model.Name, obj,model.LogoImage,model.Color);
+                _dbContext.Monsters.Add(newBoss);
+                _dbContext.SaveChangesAsync().GetAwaiter().GetResult();
+                var monster = _dbContext.Monsters.Find(newBoss);
+                var server = _dbContext.Servers.Find(model.Server);
+                var newServerBoss = new ServerMonster() {Monster = monster, Server = server};
+                _dbContext.ServerMonster.Add(newServerBoss);
+                _dbContext.SaveChangesAsync().GetAwaiter().GetResult();
+                var serverMonster = _dbContext.ServerMonster.Find(newServerBoss);
+                var hist = new MonsterHistoryData(model.HistoryAction.Comment)
+                {
+                    ActionLastDate = DateTime.Now, ServerMonster = serverMonster,
+                    UserName = model.HistoryAction.UserName, Action = model.HistoryAction.Action
+                };
+                _dbContext.History.Add(hist);
                 _dbContext.SaveChangesAsync().GetAwaiter().GetResult();
             }
         }

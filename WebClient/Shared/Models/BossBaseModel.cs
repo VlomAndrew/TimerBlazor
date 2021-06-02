@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 using WebClient.Shared.AuxClasses;
 
 namespace WebClient.Shared.Models
@@ -8,5 +9,7 @@ namespace WebClient.Shared.Models
     {
         public string Name { get; set; }
         public string TimeSpawn { get; set; }
+
+        public string Color { get; set; }
     }
 }

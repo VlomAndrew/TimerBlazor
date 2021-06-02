@@ -19,12 +19,16 @@ namespace WebClient.Server.Data
         {
         }
 
-        public DbSet<BossData> Bosses { get; set; }
+        public DbSet<MonsterData> Monsters { get; set; }
+        public DbSet<ServerData> Servers { get; set; }
+        public DbSet<MonsterHistoryData> History { get; set; }
+
+        public DbSet<ServerMonster> ServerMonster { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
 
-            builder.ApplyConfiguration(new RoleConfiguration());
+            builder.ApplyConfiguration(new UserRolesConfiguration());
         }
     }
 }

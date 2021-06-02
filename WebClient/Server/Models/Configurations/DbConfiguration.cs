@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace WebClient.Server.Models
 {
-    public class RoleConfiguration : IEntityTypeConfiguration<IdentityRole>
+    public class UserRolesConfiguration : IEntityTypeConfiguration<IdentityRole>
     {
         public void Configure(EntityTypeBuilder<IdentityRole> builder)
         {

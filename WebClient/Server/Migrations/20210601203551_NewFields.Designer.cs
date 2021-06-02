@@ -10,8 +10,8 @@ using WebClient.Server.Data;
 namespace WebClient.Server.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20210530111142_InitAuth")]
-    partial class InitAuth
+    [Migration("20210601203551_NewFields")]
+    partial class NewFields
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -153,8 +153,8 @@ namespace WebClient.Server.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "e587878b-7c2f-4534-888e-a05f854f2a55",
-                            ConcurrencyStamp = "fc5e49a7-5d7b-4499-b956-ae6d6423b6d8",
+                            Id = "85e6c75f-34fd-4066-9043-008611666f9b",
+                            ConcurrencyStamp = "95731e87-f47a-4544-903e-285bc6e02d2a",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         });
@@ -333,6 +333,96 @@ namespace WebClient.Server.Migrations
                     b.ToTable("AspNetUsers");
                 });
 
+            modelBuilder.Entity("WebClient.Server.Models.MonsterData", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Color")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<byte[]>("LogoImageData")
+                        .HasColumnType("varbinary(max)");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<TimeSpan>("TimeSpawn")
+                        .HasColumnType("time");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Monsters");
+                });
+
+            modelBuilder.Entity("WebClient.Server.Models.MonsterHistoryData", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Action")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("ActionLastDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Comment")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("ServerMonsterId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ServerMonsterId");
+
+                    b.ToTable("History");
+                });
+
+            modelBuilder.Entity("WebClient.Server.Models.ServerData", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("ServerName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Servers");
+                });
+
+            modelBuilder.Entity("WebClient.Server.Models.ServerMonster", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int?>("MonsterId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("ServerId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MonsterId");
+
+                    b.HasIndex("ServerId");
+
+                    b.ToTable("ServerMonster");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -382,6 +472,35 @@ namespace WebClient.Server.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("WebClient.Server.Models.MonsterHistoryData", b =>
+                {
+                    b.HasOne("WebClient.Server.Models.ServerMonster", "ServerMonster")
+                        .WithMany("History")
+                        .HasForeignKey("ServerMonsterId");
+
+                    b.Navigation("ServerMonster");
+                });
+
+            modelBuilder.Entity("WebClient.Server.Models.ServerMonster", b =>
+                {
+                    b.HasOne("WebClient.Server.Models.MonsterData", "Monster")
+                        .WithMany()
+                        .HasForeignKey("MonsterId");
+
+                    b.HasOne("WebClient.Server.Models.ServerData", "Server")
+                        .WithMany()
+                        .HasForeignKey("ServerId");
+
+                    b.Navigation("Monster");
+
+                    b.Navigation("Server");
+                });
+
+            modelBuilder.Entity("WebClient.Server.Models.ServerMonster", b =>
+                {
+                    b.Navigation("History");
                 });
 #pragma warning restore 612, 618
         }
